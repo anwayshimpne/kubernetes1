@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Guestbook – v2</title>
+  <style>
+    body { font: 1rem/1.5 system-ui, sans-serif; max-width: 42rem; margin: 3rem auto; padding: 0 1rem; }
+    label, input, button { display: block; margin: .6rem 0; }
+    input { box-sizing: border-box; padding: .6rem; width: 100%; }
+    li { border-bottom: 1px solid #ddd; padding: .5rem 0; }
+  </style>
+</head>
+<body>
+  <h1>Guestbook – v2</h1>
+  <form id="guestbook-form">
+    <label for="message">Leave a message</label>
+    <input id="message" name="message" maxlength="240" required>
+    <button type="submit">Submit</button>
+  </form>
+  <ul id="entries" aria-live="polite"></ul>
+  <script>
+    const form = document.querySelector('#guestbook-form');
+    const input = document.querySelector('#message');
+    const entries = document.querySelector('#entries');
+    const messages = JSON.parse(localStorage.getItem('guestbook-messages') || '[]');
+    function render() {
+      entries.replaceChildren(...messages.map((message) => {
+        const item = document.createElement('li');
+        item.textContent = message;
+        return item;
+      }));
+    }
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      messages.push(input.value.trim());
+      localStorage.setItem('guestbook-messages', JSON.stringify(messages));
+      input.value = '';
+      render();
+    });
+    render();
+  </script>
+</body>
+</html>
